@@ -1,8 +1,18 @@
-(function (win, doc, Math) {
+/*! Animated Squares
+ *
+ * @author Livingston Samuel
+ * @license MIT License
+ *
+ * Original idea by squaredesign - http://squaredesign.com/lab/crazy-squares/
+ *
+ */
+
+;(function (win, doc, Math) {
   var grid = doc.getElementById('grid'),
+      strSquare = 'square',
       getSquare = (function () {
         var div = doc.createElement('div');
-        div.className = 'square';
+        div.className = strSquare;
         
         return function () {
           return div.cloneNode(true);
@@ -23,7 +33,7 @@
       pulseate = function () {
         var squares = grid.getElementsByTagName('div'),
             len = squares.length,
-            classes = ['square isDark', 'square isLightDark', 'square isPale'],
+            classes = [strSquare + ' isDark', strSquare + ' isLightDark', strSquare + ' isPale'],
             cLen = classes.length;
         
         return function () {
@@ -31,7 +41,7 @@
               randomClass = classes[Math.floor(cLen * Math.random())];
           
           if(randomSquare.className === randomClass) {
-            randomSquare.className = 'square';
+            randomSquare.className = strSquare;
           } else {
             randomSquare.className = randomClass;
           }
