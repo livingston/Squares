@@ -30,7 +30,7 @@
         
         return frag;
       },
-      pulseate = function () {
+      pulsate = function () {
         var squares = grid.getElementsByTagName('div'),
             len = squares.length,
             classes = [strSquare + ' isDark', strSquare + ' isLightDark', strSquare + ' isPale'],
@@ -77,7 +77,7 @@
 
         grid.appendChild(getGrid(col, row));
         
-        bind(grid, 'mouseover', pulseate(), false);
+        bind(grid, 'mouseover', pulsate(), false);
       };
       
       initialize();
