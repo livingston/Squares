@@ -22,7 +22,7 @@
         var cols = col || 10,
             rows = row || 6,
             l = cols * rows,
-            frag = document.createDocumentFragment();
+            frag = doc.createDocumentFragment();
             
         while (l--) {
           frag.appendChild(getSquare());
