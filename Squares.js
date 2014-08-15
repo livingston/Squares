@@ -3,82 +3,107 @@
  * @author Livingston Samuel
  * @license MIT License
  *
- * Original idea by squaredesign - http://squaredesign.com/lab/crazy-squares/
- *
  */
 
 ;(function (win, doc, Math) {
-  var grid = doc.getElementById('grid'),
-      strSquare = 'square',
-      getSquare = (function () {
-        var div = doc.createElement('div');
-        div.className = strSquare;
-        
-        return function () {
-          return div.cloneNode(true);
-        };
-      }()),
-      getGrid = function (col, row) {
-        var cols = col || 10,
-            rows = row || 6,
-            l = cols * rows,
-            frag = doc.createDocumentFragment();
-            
-        while (l--) {
-          frag.appendChild(getSquare());
-        }
-        
-        return frag;
-      },
-      pulsate = function () {
-        var squares = grid.getElementsByTagName('div'),
-            len = squares.length,
-            classes = [strSquare + ' isDark', strSquare + ' isLightDark', strSquare + ' isPale'],
-            cLen = classes.length;
-        
-        return function () {
-          var randomSquare = squares.item(Math.floor(len * Math.random())),
-              randomClass = classes[Math.floor(cLen * Math.random())];
-          
-          if(randomSquare.className === randomClass) {
-            randomSquare.className = strSquare;
-          } else {
-            randomSquare.className = randomClass;
-          }
+  var getRandomColor = function () {
+    return 'rgba('+ Math.floor(Math.random()*255) +','+ Math.floor(Math.random()*255) +','+ Math.floor(Math.random()*255) +','+ Math.random().toFixed(1) +')';
+  };
 
-        };
-      },
-      bind = (function () {
-        if (win.addEventListener) {
-          return function (elem, evt, fn) {
-            elem.addEventListener(evt, fn, false)
-          };
-        } else if (win.attachEvent) {
-          return function (elem, evt, fn) {
-            elem.attachEvent('on' + evt, fn);
-          }
-        } else {
-          return function (elem, evt, fn) {
-            var oldfn = elem['on' +  evt];
-            
-            elem['on' + evt] = function () {
-              if(oldfn) {
-                oldfn();
-              }
-              
-              fn();
-            }
-          }
-        }
-      }()),
-      initialize = function () {
-        var row = Math.floor((win.innerHeight || doc.documentElement.clientHeight)/52),
-            col = Math.floor((win.innerWidth || doc.documentElement.clientWidth)/52);
+  var Squares = function (board, options) {
+    var defaultOptions = {
+      width: doc.body.offsetWidth,
+      height: doc.body.offsetHeight,
 
-        grid.appendChild(getGrid(col, row));
-        
-        bind(grid, 'mouseover', pulsate(), false);
-      };
-      
-      initialize();
+      colWidth: 20,
+
+      grid: {
+        color: '#f7f7f7',
+        width: 1
+      },
+
+      colorFn: getRandomColor
+    };
+
+    this.board = board;
+    this.options = _.assign(options || {}, defaultOptions);
+
+    this.setup();
+
+    this.renderGrid();
+  };
+
+  Squares.prototype = {
+    setup: function () {
+      var options = this.options;
+
+      this.ctx = this.board.getContext('2d');
+    },
+
+    updateDimensions: function () {
+      var options = this.options;
+
+      this.board.width = options.width;
+      this.board.height = options.height;
+    },
+
+    renderGrid: function () {
+      var options = this.options,
+          ctx = this.ctx,
+          width = options.width,
+          height = options.height,
+          cols = options.colWidth;
+
+      this.updateDimensions();
+
+      ctx.save();
+        ctx.translate(0,0);
+
+        ctx.beginPath();
+
+        var x, y;
+
+        for (x = .5; x <= width; x += cols) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+        }
+
+        for (y = .5; y <= height; y += cols) {
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+        }
+
+        ctx.closePath();
+
+        ctx.strokeStyle = options.grid.color;
+        ctx.strokeWidth = options.grid.width;
+        ctx.stroke();
+
+      ctx.restore();
+    },
+
+    fillBox: function (x, y) {
+      var cols = this.options.colWidth;
+
+      x = x * cols;
+      y = y * cols;
+
+      this.ctx.fillStyle = this.options.colorFn();
+      this.ctx.fillRect(x, y, cols, cols);
+    },
+
+    tick: function () {
+      var cols = this.options.colWidth,
+          randomX = Math.floor((Math.random()*this.options.width)/cols),
+          randomY = Math.floor((Math.random()*this.options.height)/cols);
+
+      this.fillBox(randomX, randomY);
+
+      requestAnimationFrame(this.tick.bind(this));
+    }
+  };
+
+  var sqrs = new Squares(document.getElementById('sqrs-grid'));
+
+  sqrs.tick();
 }(window, document, Math));
