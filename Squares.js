@@ -26,7 +26,7 @@
     };
 
     this.board = board;
-    this.options = _.assign(options || {}, defaultOptions);
+    this.options = _.assign(defaultOptions, options || {});
 
     this.setup();
 
