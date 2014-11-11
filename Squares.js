@@ -103,7 +103,5 @@
     }
   };
 
-  var sqrs = new Squares(document.getElementById('sqrs-grid'));
-
-  sqrs.tick();
+  win.Squares = Squares;
 }(window, document, Math));
