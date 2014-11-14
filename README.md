@@ -3,9 +3,9 @@
 *Animated background squares implemented with canvas*
 
 ####Features
-* Simple random squares
-* Interactive squares – Mouse & Touch (WIP)
-* Patterns (Coming soon…)
+- [x] Simple random squares
+- [ ] Interactive squares – Mouse & Touch (WIP)
+- [ ] Patterns
 
 <!--####Options
 * Background size
