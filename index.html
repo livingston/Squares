@@ -29,9 +29,21 @@
   <script src='http://rawgit.com/lodash/lodash/2.4.1/dist/lodash.js'></script>
   <script src='Squares.js'></script>
   <script>
+    var pastelMix = 130;
+    var getRandomPastelColor = function () {
+      return "rgb(#,#,#)".replace(/#/g, function () { return (Math.round(Math.random() * pastelMix) + pastelMix); });
+    };
+
+    var renderSquare = function (ctx, cols) {
+      ctx.fillStyle = getRandomPastelColor();
+      ctx.fillRect(0, 0, cols, cols);
+    };
+
     var options = {
       height: document.body.offsetHeight,
-      width: document.body.offsetWidth
+      width: document.body.offsetWidth,
+
+      shapeFn: renderSquare
     };
 
 
