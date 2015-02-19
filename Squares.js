@@ -10,6 +10,11 @@
     return 'rgba('+ Math.floor(Math.random()*255) +','+ Math.floor(Math.random()*255) +','+ Math.floor(Math.random()*255) +','+ Math.random().toFixed(1) +')';
   };
 
+  var renderSquare = function (ctx, cols, x, y) {
+    ctx.fillStyle = getRandomColor();
+    ctx.fillRect(0, 0, cols, cols);
+  };
+
   var Squares = function (board, options) {
     var defaultOptions = {
       width: doc.body.offsetWidth,
@@ -22,7 +27,7 @@
         width: 1
       },
 
-      colorFn: getRandomColor
+      shapeFn: renderSquare
     };
 
     this.board = board;
@@ -30,7 +35,8 @@
 
     this.setup();
 
-    this.renderGrid();
+    if(this.options.grid)
+      this.renderGrid();
   };
 
   Squares.prototype = {
@@ -38,6 +44,8 @@
       var options = this.options;
 
       this.ctx = this.board.getContext('2d');
+
+      this.updateDimensions();
     },
 
     updateDimensions: function () {
@@ -53,8 +61,6 @@
           width = options.width,
           height = options.height,
           cols = options.colWidth;
-
-      this.updateDimensions();
 
       ctx.save();
         ctx.translate(0,0);
@@ -82,14 +88,16 @@
       ctx.restore();
     },
 
-    fillBox: function (x, y) {
+    renderShape: function (x, y) {
       var cols = this.options.colWidth;
 
       x = x * cols;
       y = y * cols;
 
-      this.ctx.fillStyle = this.options.colorFn();
-      this.ctx.fillRect(x, y, cols, cols);
+      this.ctx.save();
+        this.ctx.translate(x, y);
+        this.options.shapeFn(this.ctx, cols, x, y)
+      this.ctx.restore();
     },
 
     tick: function () {
@@ -97,7 +105,7 @@
           randomX = Math.floor((Math.random()*this.options.width)/cols),
           randomY = Math.floor((Math.random()*this.options.height)/cols);
 
-      this.fillBox(randomX, randomY);
+      this.renderShape(randomX, randomY);
 
       requestAnimationFrame(this.tick.bind(this));
     }
