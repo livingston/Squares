@@ -1,4 +1,4 @@
-##Squares
+##Squares [![Code Climate](https://codeclimate.com/github/livingston/Squares/badges/gpa.svg)](https://codeclimate.com/github/livingston/Squares)
 
 *Animated background squares implemented with canvas*
 
